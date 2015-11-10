@@ -24,7 +24,7 @@ Inject a no-op batching strategy into `GraphQLStoreChangeEmitter` **on the serve
 import GraphQLStoreChangeEmitter from 'react-relay/lib/GraphQLStoreChangeEmitter';
 GraphQLStoreChangeEmitter.injectBatchingStrategy(() => {});
 ```
-When processing a request **on the server**, preload data using `loadAndStoreData`, render React using `IsomorphicRootContainer` as a Relay root container, and send the React output with the data to the browser:
+When processing a request **on the server**, preload data using `loadAndStoreData`, render React using `IsomorphicRootContainer` in place of `Relay.RootContainer`, and send the React output with the data to the browser:
 ```javascript
 import {
   IsomorphicRootContainer,
@@ -43,7 +43,7 @@ app.get('/', (req, res, next) => {
   }, next);
 });
 ```
-On initial page load **in the browser**, store the preloaded data in the Relay store using `storePreloadedData`, render React using `IsomorphicRootContainer` as a Relay root container:
+On initial page load **in the browser**, store the preloaded data in the Relay store using `storePreloadedData`, render React using `IsomorphicRootContainer` in place of `Relay.RootContainer`:
 ```javascript
 import {
   IsomorphicRootContainer,
