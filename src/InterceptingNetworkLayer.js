@@ -19,7 +19,7 @@ export function wasInjected() {
     return _wasInjected;
 }
 
-export function injectNetworkLayerOnServer(networkLayer) {
+export function injectNetworkLayer(networkLayer) {
     Object.setPrototypeOf(interceptingNetworkLayer, networkLayer);
 
     Relay.injectNetworkLayer(interceptingNetworkLayer);
