@@ -4,6 +4,8 @@ Adds server side rendering support to React Relay.
 
 Thanks to [@voideanvalue](https://github.com/voideanvalue) for the [information](https://github.com/facebook/relay/issues/36#issuecomment-130402024) that helped to build this package.
 
+If you are using [react-router-relay](https://github.com/relay-tools/react-router-relay), then you might also be interested in [isomorphic-relay-router](https://github.com/denvned/isomorphic-relay-router), which is based on *isomorphic-relay*.
+
 Installation
 ------------
 
