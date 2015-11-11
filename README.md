@@ -12,12 +12,12 @@ Installation
 How to use
 ----------
 
-Inject a network layer to *isomorphic-relay* **on the server**:
+Inject a **custom** network layer to *isomorphic-relay* (but not to Relay itself) **on the server**:
 ```javascript
 import {injectNetworkLayer} from 'isomorphic-relay';
-injectNetworkLayer(new MyNetworkLayer('http://localhost:8080/graphql'));
+injectNetworkLayer(new MyCustomNetworkLayer('http://localhost:8080/graphql'));
 ```
-And import `react-relay/lib/RelayPublic` module instead of `react-relay` everywhere to prevent automatic loading of `RelayDefaultNetworkLayer`, which throws an exception on the server (see [facebook/fbjs#47](https://github.com/facebook/fbjs/issues/47)). But you should import `react-relay` at least once in the browser (e.g. in the browser entry script), if you don't inject a custom network layer in the browser.
+And import `react-relay/lib/RelayPublic` module instead of `react-relay` everywhere to prevent automatic loading of `RelayDefaultNetworkLayer`, which throws an exception on the server (see [facebook/fbjs#47](https://github.com/facebook/fbjs/issues/47)). But you should import `react-relay` at least once in the browser (e.g. in the browser entry script), or you have to manually inject a network layer in the browser.
 
 Inject a no-op batching strategy into `GraphQLStoreChangeEmitter` **on the server**:
 ```javascript
@@ -32,6 +32,10 @@ import {
 } from 'isomorphic-relay';
 
 app.get('/', (req, res, next) => {
+  const rootContainerProps = {
+    Component: MyContainer,
+    route: new MyRoute(),
+  };
   loadAndStoreData(rootContainerProps).then(data => {
     const reactOutput = ReactDOMServer.renderToString(
       <IsomorphicRootContainer {...rootContainerProps} />
@@ -51,6 +55,10 @@ import {
 } from 'isomorphic-relay';
 import rootProps from './rootContainerProps';
 
+const rootContainerProps = {
+  Component: MyContainer,
+  route: new MyRoute(),
+};
 const data = JSON.parse(document.getElementById('preloadedData').textContent);
 
 storePreloadedData(rootContainerProps, data).then(render, render);
@@ -61,7 +69,7 @@ function render() {
   ReactDOM.render(<IsomorphicRootContainer {...rootContainerProps} />, rootElement);
 }
 ```
-**Important note:** pass the same properties containing `Component` and `route` to `loadAndStoreData`, `storePreloadedData`, and `IsomorphicRootContainer` when processing request on the server, and on initial page load in the browser.
+**Important note:** pass the same properties (i.e. containing the same `Component`, and the same `route` with the same route parameters) to `loadAndStoreData` on the server, to `storePreloadedData` in the browser, and to `IsomorphicRootContainer` both on the server, and in the browser on initial page load.
 
 Example
 -------
