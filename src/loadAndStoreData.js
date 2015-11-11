@@ -1,4 +1,4 @@
-import Relay from 'react-relay/lib/RelayPublic';
+import Relay from 'react-relay';
 import {
     queryResults,
     wasInjected,

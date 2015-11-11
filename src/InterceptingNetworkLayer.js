@@ -1,4 +1,4 @@
-import Relay from 'react-relay/lib/RelayPublic';
+import Relay from 'react-relay';
 
 export const queryResults = new WeakMap();
 

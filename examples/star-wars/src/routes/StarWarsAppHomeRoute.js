@@ -10,7 +10,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import Relay from 'react-relay/lib/RelayPublic';
+import Relay from 'react-relay';
 
 export default class extends Relay.Route {
   static queries = {

@@ -12,13 +12,13 @@ Installation
 How to use
 ----------
 
-Inject a **custom** network layer to *isomorphic-relay* (but not to Relay itself) **on the server**:
+Make sure *isomorphic-relay* module is loaded before *react-relay* on the server, because it prevents *"self is not defined"* error (see [facebook/fbjs#47](https://github.com/facebook/fbjs/issues/47)).
+
+Inject a network layer to *isomorphic-relay* (but not to Relay itself) **on the server**:
 ```javascript
 import {injectNetworkLayer} from 'isomorphic-relay';
-injectNetworkLayer(new MyCustomNetworkLayer('http://localhost:8080/graphql'));
+injectNetworkLayer(new Relay.DefaultNetworkLayer('http://localhost:8080/graphql'));
 ```
-And import `react-relay/lib/RelayPublic` module instead of `react-relay` everywhere to prevent automatic loading of `RelayDefaultNetworkLayer`, which throws an exception on the server (see [facebook/fbjs#47](https://github.com/facebook/fbjs/issues/47)). But you should import `react-relay` at least once in the browser (e.g. in the browser entry script), or you have to manually inject a network layer in the browser.
-
 Inject a no-op batching strategy into `GraphQLStoreChangeEmitter` **on the server**:
 ```javascript
 import GraphQLStoreChangeEmitter from 'react-relay/lib/GraphQLStoreChangeEmitter';

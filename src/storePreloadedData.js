@@ -1,6 +1,6 @@
 import DliteFetchModeConstants from 'react-relay/lib/DliteFetchModeConstants';
 import GraphQLQueryRunner from 'react-relay/lib/GraphQLQueryRunner';
-import Relay from 'react-relay/lib/RelayPublic';
+import Relay from 'react-relay';
 import RelayPendingQueryTracker from 'react-relay/lib/RelayPendingQueryTracker';
 
 export default function({Component, route}, queryResults) {
@@ -22,7 +22,7 @@ export default function({Component, route}, queryResults) {
         if (!result) {
             throw new Error(`No result for query "${name}"`);
         }
-        RelayPendingQueryTracker.resolvePreloadQuery(querySet[name].getID(), { response: result });
+        RelayPendingQueryTracker.resolvePreloadQuery(querySet[name].getID(), {response: result});
     });
     return request;
 }

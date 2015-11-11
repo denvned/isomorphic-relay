@@ -1,5 +1,5 @@
 import GraphQLFragmentPointer from 'react-relay/lib/GraphQLFragmentPointer';
-import Relay from 'react-relay/lib/RelayPublic';
+import Relay from 'react-relay';
 import RelayQuery from 'react-relay/lib/RelayQuery';
 import RelayStoreData from 'react-relay/lib/RelayStoreData';
 

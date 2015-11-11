@@ -11,7 +11,7 @@
  */
 
 import React from 'react';
-import Relay from 'react-relay/lib/RelayPublic';
+import Relay from 'react-relay';
 
 class StarWarsShip extends React.Component {
   render() {
