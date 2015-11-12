@@ -1,13 +1,15 @@
 import DliteFetchModeConstants from 'react-relay/lib/DliteFetchModeConstants';
-import GraphQLQueryRunner from 'react-relay/lib/GraphQLQueryRunner';
 import Relay from 'react-relay';
 import RelayPendingQueryTracker from 'react-relay/lib/RelayPendingQueryTracker';
+import RelayStoreData from 'react-relay/lib/RelayStoreData';
+
+const queryRunner = RelayStoreData.getDefaultInstance().getQueryRunner();
 
 export default function({Component, route}, queryResults) {
     const querySet = Relay.getQueries(Component, route);
 
     const request = new Promise((resolve, reject) => {
-        GraphQLQueryRunner.run(querySet, ({aborted, done, error}) => {
+        queryRunner.run(querySet, ({aborted, done, error}) => {
             if (error) {
                 reject(error);
             } else if (aborted) {
