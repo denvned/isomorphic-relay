@@ -3,7 +3,6 @@ import RelayPendingQueryTracker from 'react-relay/lib/RelayPendingQueryTracker';
 import RelayQuery from 'react-relay/lib/RelayQuery';
 import RelayStoreData from 'react-relay/lib/RelayStoreData';
 import toGraphQL from 'react-relay/lib/toGraphQL';
-import injectPreparedData from './injectPreparedData';
 
 // HACK: Do not memoize concrete node produced by toGraphQL,
 // because it changes RelayQuery.Fragment.getConcreteFragmentID()
