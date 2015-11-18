@@ -41,6 +41,7 @@ function IsomorphicRootContainer({
     }
 }
 
-Object.setPrototypeOf(IsomorphicRootContainer, Relay.RootContainer);
+IsomorphicRootContainer.propTypes = Relay.RootContainer.propTypes;
+IsomorphicRootContainer.childContextTypes = Relay.RootContainer.childContextTypes;
 
 export default IsomorphicRootContainer;
