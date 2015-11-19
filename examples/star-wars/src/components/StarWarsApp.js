@@ -35,12 +35,17 @@ class StarWarsApp extends React.Component {
 }
 
 export default Relay.createContainer(StarWarsApp, {
+  initialVariables: { shipCount: 10 },
+  prepareVariables: function(prevVars) {
+    console.log('prepareVariables:', prevVars);
+    return prevVars;
+  },
   fragments: {
     factions: () => Relay.QL`
       fragment on Faction @relay(plural: true) {
         id,
         name,
-        ships(first: 10) {
+        ships(first: $shipCount) {
           edges {
             node {
               id,
