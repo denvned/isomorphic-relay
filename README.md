@@ -36,7 +36,7 @@ import Relay from 'react-relay';
 ```
 
 Don't forget to inject a network layer to Relay on the server.
-And if you use `Relay.DefaultNetworkLayer`, specify the full url to the GraphQL endpoint:
+And if you are using `Relay.DefaultNetworkLayer`, specify the full url to the GraphQL endpoint:
 ```javascript
 const GRAPHQL_URL = `http://localhost:8080/graphql`;
 
