@@ -8,7 +8,12 @@ import checkRelayQueryData from 'react-relay/lib/checkRelayQueryData';
 import flattenSplitRelayQueries from 'react-relay/lib/flattenSplitRelayQueries';
 import splitDeferredRelayQueries from 'react-relay/lib/splitDeferredRelayQueries';
 
-class IsomorphicRenderer extends RelayRenderer {
+export default class IsomorphicRenderer extends RelayRenderer {
+    static displayName = 'IsomorphicRenderer';
+    // Static members are not inherited on <IE11. So, we have to redefine them.
+    static propTypes = RelayRenderer.propTypes;
+    static childContextTypes = RelayRenderer.childContextTypes;
+
     _runQueries(props) {
         // _runQueries should not be called on server side,
         // so don't call it from constructor, and call it from componentDidMount instead
@@ -65,13 +70,7 @@ class IsomorphicRenderer extends RelayRenderer {
             this._runQueries(this.props);
         }
     }
-
 }
-
-IsomorphicRenderer.propTypes = RelayRenderer.propTypes;
-IsomorphicRenderer.childContextTypes = RelayRenderer.childContextTypes;
-
-export default IsomorphicRenderer;
 
 const queuedStore = RelayStoreData.getDefaultInstance().getQueuedStore();
 
