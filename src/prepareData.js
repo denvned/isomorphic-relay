@@ -1,5 +1,4 @@
 import Relay from 'react-relay';
-import RelayPendingQueryTracker from 'react-relay/lib/RelayPendingQueryTracker';
 import RelayQuery from 'react-relay/lib/RelayQuery';
 import RelayStoreData from 'react-relay/lib/RelayStoreData';
 import toGraphQL from 'react-relay/lib/toGraphQL';
@@ -26,7 +25,6 @@ export default function prepareData({Component, route}) {
 
         const querySet = Relay.getQueries(Component, route);
 
-        RelayPendingQueryTracker.resetPending();
         storeData.getQueryRunner().forceFetch(querySet, onReadyStateChange);
 
         function onReadyStateChange({aborted, done, error, stale}) {

@@ -43,11 +43,11 @@ const GRAPHQL_URL = `http://localhost:8080/graphql`;
 Relay.injectNetworkLayer(new Relay.DefaultNetworkLayer(GRAPHQL_URL));
 ```
 
-Inject a no-op batching strategy into `GraphQLStoreChangeEmitter`, but **only on the server:**
+Inject a no-op batching strategy into the Relay *change emitter*, but **only on the server:**
 ```javascript
-import GraphQLStoreChangeEmitter from 'react-relay/lib/GraphQLStoreChangeEmitter';
+import RelayStoreData from 'react-relay/lib/RelayStoreData';
 
-GraphQLStoreChangeEmitter.injectBatchingStrategy(() => {});
+RelayStoreData.getDefaultInstance().getChangeEmitter().injectBatchingStrategy(() => {});
 ```
 
 When processing a request **on the server**, prepare the data using `IsomorphicRelay.prepareData`,
