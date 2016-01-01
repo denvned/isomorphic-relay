@@ -1,2 +1,4 @@
 data/schema.graphql
 lib
+node_modules
+npm-debug.log
