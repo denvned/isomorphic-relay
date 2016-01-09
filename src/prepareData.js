@@ -3,12 +3,6 @@ import RelayQuery from 'react-relay/lib/RelayQuery';
 import RelayStoreData from 'react-relay/lib/RelayStoreData';
 import toGraphQL from 'react-relay/lib/toGraphQL';
 
-// HACK: Do not memoize concrete node produced by toGraphQL,
-// because it changes RelayQuery.Fragment.getConcreteFragmentID()
-// whereas RelayQuery is supposed to be immutable.
-// TODO: remove when it is fixed in Relay
-RelayQuery.Node.prototype.getConcreteQueryNode = onCacheMiss => onCacheMiss();
-
 const globalStoreData = RelayStoreData.getDefaultInstance();
 
 export default function prepareData({Component, route}) {
