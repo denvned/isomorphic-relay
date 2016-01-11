@@ -3,10 +3,9 @@
 ## Installation
 
 ```
-npm install -g babel@5
+npm install -g babel
 npm install
 ```
-Note that only babel v5 is currently supported.
 
 ## Running
 
