@@ -1,6 +1,6 @@
 {
   "name": "isomorphic-relay",
-  "version": "0.4.2",
+  "version": "0.5.0-alpha.0",
   "description": "Adds server side rendering support to React Relay",
   "author": "Denis Nedelyaev",
   "homepage": "https://github.com/denvned/isomorphic-relay",
@@ -31,10 +31,11 @@
   },
   "dependencies": {
     "babel-runtime": "^6.3.19",
-    "isomorphic-fetch": "^2.2.0"
+    "fbjs": "^0.7.0",
+    "react-static-container": "^1.0.0-alpha.1"
   },
   "peerDependencies": {
-    "react-relay": "0.6.1"
+    "react-relay": "0.7.0"
   },
   "devDependencies": {
     "babel-cli": "^6.3.17",

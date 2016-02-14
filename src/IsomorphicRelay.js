@@ -1,4 +1,3 @@
-import './fixFetch';
 import injectPreparedData from './injectPreparedData';
 import IsomorphicRootContainer from './IsomorphicRootContainer';
 import prepareData from './prepareData';
