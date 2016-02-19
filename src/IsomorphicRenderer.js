@@ -270,12 +270,12 @@ IsomorphicRenderer.propTypes = {
   forceFetch: React.PropTypes.bool,
   onReadyStateChange: React.PropTypes.func,
   queryConfig: Relay.PropTypes.QueryConfig.isRequired,
-  relayContext: Relay.PropTypes.Context.isRequired,
+  relayContext: Relay.PropTypes.Context,
   render: React.PropTypes.func,
 };
 
 IsomorphicRenderer.childContextTypes = {
-  relay: Relay.PropTypes.Context.isRequired,
+  relay: Relay.PropTypes.Context,
   route: Relay.PropTypes.QueryConfig.isRequired,
 };
 

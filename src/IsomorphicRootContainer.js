@@ -48,7 +48,7 @@ IsomorphicRootContainer.defaultProps = {
 };
 IsomorphicRootContainer.propTypes = {
     ...Relay.RootContainer.propTypes,
-    relayContext: Relay.PropTypes.Context.isRequired,
+    relayContext: Relay.PropTypes.Context,
 };
 IsomorphicRootContainer.childContextTypes = Relay.RootContainer.childContextTypes;
 
