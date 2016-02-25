@@ -35,6 +35,7 @@
     "react-static-container": "^1.0.0-alpha.1"
   },
   "peerDependencies": {
+    "graphql": "*",
     "react-relay": "0.7.1 - 0.7.3"
   },
   "devDependencies": {
