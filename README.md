@@ -45,6 +45,16 @@ const GRAPHQL_URL = `http://localhost:8080/graphql`;
 Relay.injectNetworkLayer(new Relay.DefaultNetworkLayer(GRAPHQL_URL));
 ```
 
+If you want to execute graphql queries on the same server that is doing the rendering and avoid
+making HTTP requests to yourself, you can use `IsomorphicRelay.LocalNetworkLayer` like this:
+```javascript
+import IsomorphicRelay from 'isomorphic-relay';
+import schema from 'your-graphql-schema';
+import rootValue from 'your-graphql-root-value';
+
+Relay.injectNetworkLayer(new IsomorphicRelay.LocalNetworkLayer(schema, rootValue));
+```
+
 When processing a request **on the server**, prepare the data using `IsomorphicRelay.prepareData`,
 then render React markup using `IsomorphicRelay.RootContainer` in place of `Relay.RootContainer`
 (pass `props` returned by  `IsomorphicRelay.prepareData`), and send the React output along with the
