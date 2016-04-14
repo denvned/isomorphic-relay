@@ -6,7 +6,7 @@ function IsomorphicRootContainer({
     Component,
     forceFetch,
     onReadyStateChange,
-    relayContext,
+    relayEnvironment,
     renderFailure,
     renderFetched,
     renderLoading,
@@ -18,7 +18,7 @@ function IsomorphicRootContainer({
             forceFetch={forceFetch}
             onReadyStateChange={onReadyStateChange}
             queryConfig={route}
-            relayContext={relayContext}
+            relayEnvironment={relayEnvironment}
             render={render}
         />
     );
@@ -44,11 +44,11 @@ function IsomorphicRootContainer({
 }
 
 IsomorphicRootContainer.defaultProps = {
-    relayContext: Relay.Store,
+    relayEnvironment: Relay.Store,
 };
 IsomorphicRootContainer.propTypes = {
     ...Relay.RootContainer.propTypes,
-    relayContext: Relay.PropTypes.Context,
+    relayEnvironment: Relay.PropTypes.Context,
 };
 IsomorphicRootContainer.childContextTypes = Relay.RootContainer.childContextTypes;
 

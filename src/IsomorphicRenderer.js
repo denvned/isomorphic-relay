@@ -13,7 +13,7 @@ class IsomorphicRenderer extends React.Component {
   constructor(props, context) {
     super(props, context);
     const garbageCollector =
-      this.props.relayContext.getStoreData().getGarbageCollector();
+      this.props.relayEnvironment.getStoreData().getGarbageCollector();
     this.gcHold = garbageCollector && garbageCollector.acquireHold();
     this.mounted = true;
     this.pendingRequest = null;
@@ -21,18 +21,18 @@ class IsomorphicRenderer extends React.Component {
   }
 
   _buildInitialState() {
-    const {Container, forceFetch, queryConfig, relayContext} = this.props;
+    const {Container, forceFetch, queryConfig, relayEnvironment} = this.props;
 
     const querySet = Relay.getQueries(Container, queryConfig);
 
-    const {done, ready} = checkCache(relayContext, querySet);
+    const {done, ready} = checkCache(relayEnvironment, querySet);
 
     if (ready) {
       const props = {
         ...queryConfig.params,
         ...mapObject(
           querySet,
-          query => createFragmentPointerForRoot(relayContext, query)
+          query => createFragmentPointerForRoot(relayEnvironment, query)
         ),
       };
       const readyState = {
@@ -43,7 +43,7 @@ class IsomorphicRenderer extends React.Component {
         ready: true,
         stale: !!forceFetch,
       };
-      return this._buildState(Container, relayContext, queryConfig, readyState, props);
+      return this._buildState(Container, relayEnvironment, queryConfig, readyState, props);
     }
 
     return this._buildState(null, null, null, null, null);
@@ -76,7 +76,7 @@ class IsomorphicRenderer extends React.Component {
   }
 
   getChildContext() {
-    const {queryConfig: route, relayContext: relay} = this.props;
+    const {queryConfig: route, relayEnvironment: relay} = this.props;
     return {relay, route};
   }
 
@@ -88,7 +88,7 @@ class IsomorphicRenderer extends React.Component {
   }
 
   _runQueries(props) {
-    const {Container, forceFetch, queryConfig, relayContext} = props;
+    const {Container, forceFetch, queryConfig, relayEnvironment} = props;
     const querySet = Relay.getQueries(Container, queryConfig);
     const onReadyStateChange = readyState => {
       if (!this.mounted) {
@@ -114,11 +114,11 @@ class IsomorphicRenderer extends React.Component {
           ...queryConfig.params,
           ...mapObject(
             querySet,
-            query => createFragmentPointerForRoot(relayContext, query)
+            query => createFragmentPointerForRoot(relayEnvironment, query)
           ),
         };
       }
-      this._buildAndSetState(Container, relayContext, queryConfig, readyState, props);
+      this._buildAndSetState(Container, relayEnvironment, queryConfig, readyState, props);
     };
 
     if (this.pendingRequest) {
@@ -129,12 +129,12 @@ class IsomorphicRenderer extends React.Component {
       (
         props.onForceFetch ?
           props.onForceFetch(querySet, onReadyStateChange) :
-          relayContext.forceFetch(querySet, onReadyStateChange)
+          relayEnvironment.forceFetch(querySet, onReadyStateChange)
       ) :
       (
         props.onPrimeCache ?
           props.onPrimeCache(querySet, onReadyStateChange) :
-          relayContext.primeCache(querySet, onReadyStateChange)
+          relayEnvironment.primeCache(querySet, onReadyStateChange)
       );
   }
 
@@ -151,14 +151,14 @@ class IsomorphicRenderer extends React.Component {
 
   _shouldUpdate() {
     const {activeContainer, activeContext, activeQueryConfig} = this.state;
-    const {Container, queryConfig, relayContext} = this.props;
+    const {Container, queryConfig, relayEnvironment} = this.props;
     return (
       (!activeContainer || Container === activeContainer) &&
-      (!activeContext || relayContext === activeContext) &&
+      (!activeContext || relayEnvironment === activeContext) &&
       (!activeQueryConfig || queryConfig === activeQueryConfig)
     );
   }
-  
+
   _retry() {
     const {readyState} = this.state;
     invariant(
@@ -172,14 +172,14 @@ class IsomorphicRenderer extends React.Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.Container !== this.props.Container ||
         nextProps.queryConfig !== this.props.queryConfig ||
-        nextProps.relayContext !== this.props.relayContext ||
+        nextProps.relayEnvironment !== this.props.relayEnvironment ||
         (nextProps.forceFetch && !this.props.forceFetch)) {
-      if (nextProps.relayContext !== this.props.relayContext) {
+      if (nextProps.relayEnvironment !== this.props.relayEnvironment) {
         if (this.gcHold) {
           this.gcHold.release();
         }
         const garbageCollector =
-          nextProps.relayContext.getStoreData().getGarbageCollector();
+          nextProps.relayEnvironment.getStoreData().getGarbageCollector();
         this.gcHold = garbageCollector && garbageCollector.acquireHold();
       }
       this._runQueriesAndSetState(nextProps);
@@ -237,8 +237,8 @@ class IsomorphicRenderer extends React.Component {
   }
 }
 
-function checkCache(relayContext, querySet) {
-  const queuedStore = relayContext.getStoreData().getQueuedStore();
+function checkCache(relayEnvironment, querySet) {
+  const queuedStore = relayEnvironment.getStoreData().getQueuedStore();
 
   let done = true;
   const ready = Object.keys(querySet).every(name =>
@@ -256,10 +256,10 @@ function checkCache(relayContext, querySet) {
   return {done, ready};
 }
 
-function createFragmentPointerForRoot(relayContext, query) {
+function createFragmentPointerForRoot(relayEnvironment, query) {
   return query ?
     RelayFragmentPointer.createForRoot(
-      relayContext.getStoreData().getQueuedStore(),
+      relayEnvironment.getStoreData().getQueuedStore(),
       query
     ) :
     null;
@@ -270,7 +270,7 @@ IsomorphicRenderer.propTypes = {
   forceFetch: React.PropTypes.bool,
   onReadyStateChange: React.PropTypes.func,
   queryConfig: Relay.PropTypes.QueryConfig.isRequired,
-  relayContext: Relay.PropTypes.Context,
+  relayEnvironment: Relay.PropTypes.Context,
   render: React.PropTypes.func,
 };
 

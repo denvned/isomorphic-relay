@@ -1,11 +1,11 @@
 import Relay from 'react-relay';
-import RelayContext from 'react-relay/lib/RelayContext';
+import RelayEnvironment from 'react-relay/lib/RelayEnvironment';
 import toGraphQL from 'react-relay/lib/toGraphQL';
 
 export default function prepareData({Component, route}) {
     return new Promise((resolve, reject) => {
-        const relayContext = new RelayContext();
-        const storeData = relayContext.getStoreData();
+        const relayEnvironment = new RelayEnvironment();
+        const storeData = relayEnvironment.getStoreData();
 
         storeData.getChangeEmitter().injectBatchingStrategy(() => {});
 
@@ -19,7 +19,7 @@ export default function prepareData({Component, route}) {
 
         const querySet = Relay.getQueries(Component, route);
 
-        relayContext.forceFetch(querySet, onReadyStateChange);
+        relayEnvironment.forceFetch(querySet, onReadyStateChange);
 
         function onReadyStateChange({aborted, done, error, stale}) {
             if (error) {
@@ -29,7 +29,7 @@ export default function prepareData({Component, route}) {
             } else if (done && !stale) {
                 const props = {
                     Component,
-                    relayContext,
+                    relayEnvironment,
                     route,
                 };
                 resolve({data, props});
