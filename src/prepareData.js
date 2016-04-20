@@ -1,7 +1,7 @@
 import Relay from 'react-relay';
 import toGraphQL from 'react-relay/lib/toGraphQL';
 
-export default function prepareData({Container, queryConfig}, environment) {
+export default function prepareData({Component, route}, environment) {
   return new Promise((resolve, reject) => {
     const storeData = environment.getStoreData();
 
@@ -15,7 +15,7 @@ export default function prepareData({Container, queryConfig}, environment) {
       handleQueryPayload.call(storeData, query, result, forceIndex);
     };
 
-    const querySet = Relay.getQueries(Container, queryConfig);
+    const querySet = Relay.getQueries(Component, route);
 
     environment.forceFetch(querySet, onReadyStateChange);
 
@@ -26,16 +26,9 @@ export default function prepareData({Container, queryConfig}, environment) {
         reject(new Error('Aborted'));
       } else if (done && !stale) {
         const props = {
-          Container,
+          Component,
           environment,
-          queryConfig,
-          readyState: {
-            aborted,
-            done,
-            error,
-            ready,
-            stale,
-          },
+          route,
         };
         resolve({data, props});
       }

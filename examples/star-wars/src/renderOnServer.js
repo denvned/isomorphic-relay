@@ -8,15 +8,15 @@ import rootContainerProps from './rootContainerProps';
 const GRAPHQL_URL = `http://localhost:8080/graphql`;
 
 export default (res, next) => {
-    const environment = new Relay.Environment();
-    environment.injectNetworkLayer(new Relay.DefaultNetworkLayer(GRAPHQL_URL));
-    IsomorphicRelay.prepareData(rootContainerProps, environment).then(({data, props}) => {
-        const reactOutput = ReactDOMServer.renderToString(
-            <Relay.ReadyStateRenderer {...props} />
-        );
-        res.render(path.resolve(__dirname, '..', 'views', 'index.ejs'), {
-            preloadedData: JSON.stringify(data),
-            reactOutput
-        });
-    }, next);
+  const environment = new Relay.Environment();
+  environment.injectNetworkLayer(new Relay.DefaultNetworkLayer(GRAPHQL_URL));
+  IsomorphicRelay.prepareData(rootContainerProps, environment).then(({data, props}) => {
+    const reactOutput = ReactDOMServer.renderToString(
+      <IsomorphicRelay.RootContainer {...props} />
+    );
+    res.render(path.resolve(__dirname, '..', 'views', 'index.ejs'), {
+      preloadedData: JSON.stringify(data),
+      reactOutput
+    });
+  }, next);
 }

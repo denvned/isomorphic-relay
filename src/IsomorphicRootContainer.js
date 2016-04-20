@@ -1,5 +1,8 @@
 import React from 'react';
 import Relay from 'react-relay';
+import checkRelayQueryData from 'react-relay/lib/checkRelayQueryData';
+import flattenSplitRelayQueries from 'react-relay/lib/flattenSplitRelayQueries';
+import splitDeferredRelayQueries from 'react-relay/lib/splitDeferredRelayQueries';
 
 function IsomorphicRootContainer({
   Component,
@@ -11,14 +14,28 @@ function IsomorphicRootContainer({
   renderLoading,
   route,
 }) {
-  return (
+  const isCached = !forceFetch && checkCache(environment, Component, route);
+  return isCached ? (
+    <Relay.ReadyStateRenderer
+      Container={Component}
+      environment={environment}
+      queryConfig={route}
+      readyState={{
+        aborted: false,
+        done: true,
+        ready: true,
+        stale: false,
+      }}
+      render={render}
+    />
+  ) : (
     <Relay.Renderer
       Container={Component}
+      environment={environment}
       forceFetch={forceFetch}
       onReadyStateChange={onReadyStateChange}
       queryConfig={route}
       render={render}
-      environment={environment}
     />
   );
 
@@ -42,6 +59,25 @@ function IsomorphicRootContainer({
   }
 }
 
+function checkCache(environment, Container, queryConfig) {
+  const querySet = Relay.getQueries(Container, queryConfig);
+  const queuedStore = environment.getStoreData().getQueuedStore();
+  let done = true;
+  const ready = Object.keys(querySet).every(name =>
+    flattenSplitRelayQueries(splitDeferredRelayQueries(querySet[name]))
+      .every(query => {
+        if (!checkRelayQueryData(queuedStore, query)) {
+          done = false;
+          if (!query.isDeferred()) {
+            return false;
+          }
+        }
+        return true;
+      })
+  );
+  return done && ready;
+}
+
 IsomorphicRootContainer.propTypes = {
   Component: Relay.PropTypes.Container,
   environment: Relay.PropTypes.Environment,
@@ -55,4 +91,5 @@ IsomorphicRootContainer.propTypes = {
 IsomorphicRootContainer.childContextTypes = {
   route: Relay.PropTypes.QueryConfig.isRequired,
 };
+
 export default IsomorphicRootContainer;

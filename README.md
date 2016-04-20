@@ -37,7 +37,7 @@ Installation
 How to use
 ----------
 
-Don't forget to inject a network layer to the Relay environment.
+Don't forget to inject a network layer to the Relay Environment.
 And if you are using `Relay.DefaultNetworkLayer`, specify the full url to the GraphQL endpoint:
 ```javascript
 const GRAPHQL_URL = `http://localhost:8080/graphql`;
@@ -46,7 +46,7 @@ environment.injectNetworkLayer(new Relay.DefaultNetworkLayer(GRAPHQL_URL));
 ```
 
 When processing a request **on the server**, prepare the data using `IsomorphicRelay.prepareData`,
-then render React markup using `Relay.ReadyStateRenderer` in place of `Relay.RootContainer`
+then render React markup using `IsomorphicRelay.RootContainer` in place of `Relay.RootContainer`
 (pass `props` returned by  `IsomorphicRelay.prepareData`), and send the React output along with the
 data to the client:
 ```javascript
@@ -54,17 +54,17 @@ import Relay from 'react-relay';
 import IsomorphicRelay from 'isomorphic-relay';
 
 app.get('/', (req, res, next) => {
-  const rendererProps = {
-    Container: MyContainer,
-    queryConfig: new MyRoute(),
+  const rootContainerProps = {
+    Component: MyContainer,
+    route: new MyRoute(),
   };
 
   const environment = new Relay.Environment();
   environment.injectNetworkLayer(new Relay.DefaultNetworkLayer(GRAPHQL_URL));
 
-  IsomorphicRelay.prepareData(rendererProps, environment).then({data, props} => {
+  IsomorphicRelay.prepareData(rootContainerProps, environment).then({data, props} => {
     const reactOutput = ReactDOMServer.renderToString(
-      <Relay.ReadyStateRenderer {...props} />
+      <IsomorphicRelay.RootContainer {...props} />
     );
 
     res.render('index.ejs', {

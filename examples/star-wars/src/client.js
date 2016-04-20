@@ -12,16 +12,15 @@ const environment = new Relay.Environment();
 
 environment.injectNetworkLayer(new Relay.DefaultNetworkLayer(GRAPHQL_URL));
 
-IsomorphicRelay.injectPreparedData(data, environment);
+// IsomorphicRelay.injectPreparedData(data, environment);
 
 const rootElement = document.getElementById('root');
 
 ReactDOM.render(
   (
     <IsomorphicRelay.RootContainer
-      Component={rootContainerProps.Container}
       environment={environment}
-      route={rootContainerProps.queryConfig}
+      {...rootContainerProps}
     />
   ),
   rootElement
