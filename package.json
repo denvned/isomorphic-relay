@@ -31,11 +31,9 @@
   },
   "dependencies": {
     "babel-runtime": "^6.3.19",
-    "fbjs": "^0.7.0",
-    "react-static-container": "^1.0.0-alpha.1"
   },
   "peerDependencies": {
-    "react-relay": "0.7.1 - 0.7.3"
+    "react-relay": "^0.8.0"
   },
   "devDependencies": {
     "babel-cli": "^6.3.17",
