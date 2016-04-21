@@ -4,10 +4,14 @@ import Relay from 'react-relay';
 import IsomorphicRelay from 'isomorphic-relay';
 import rootContainerProps from './rootContainerProps';
 
-const data = JSON.parse(document.getElementById('preloadedData').textContent);
+const environment = new Relay.Environment();
 
-IsomorphicRelay.injectPreparedData(data);
+environment.injectNetworkLayer(new Relay.DefaultNetworkLayer('/graphql'));
+
+const data = JSON.parse(document.getElementById('preloadedData').textContent);
 
 const rootElement = document.getElementById('root');
 
-ReactDOM.render(<IsomorphicRelay.RootContainer {...rootContainerProps} />, rootElement);
+IsomorphicRelay.injectPreparedData(environment, rootContainerProps, data).then(props => {
+  ReactDOM.render(<IsomorphicRelay.Renderer {...props} />, rootElement);
+});

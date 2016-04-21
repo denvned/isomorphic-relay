@@ -15,10 +15,9 @@ Relay store does not grow boundlessly, also one user never see data intended for
 This became possible because of merging [this](https://github.com/facebook/relay/pull/761) and
 [this](https://github.com/facebook/relay/pull/698) PRs into Relay v0.7.
 
-Unfortunately, the network layer is still not contextual, so it is still not possible to pass
-request specific cookies to the GraphQL server. But it will be possible when
-[this PR](https://github.com/facebook/relay/pull/704) is merged. For now there are workarounds,
-e.g. passing user session data as GraphQL query params.
+- Since version 0.6, the network layer is also contextual, so it is now possible to pass
+request specific cookies to the GraphQL server. The [corresponding
+PR](https://github.com/facebook/relay/pull/704) is merged into Relay v0.8.
 
 Acknowledgments
 ---------------
@@ -37,16 +36,16 @@ Installation
 How to use
 ----------
 
-Don't forget to inject a network layer to Relay on the server.
+Create a Relay network layer on the server.
 And if you are using `Relay.DefaultNetworkLayer`, specify the full url to the GraphQL endpoint:
 ```javascript
 const GRAPHQL_URL = `http://localhost:8080/graphql`;
 
-Relay.injectNetworkLayer(new Relay.DefaultNetworkLayer(GRAPHQL_URL));
+const networkLayer = new Relay.DefaultNetworkLayer(GRAPHQL_URL);
 ```
 
 When processing a request **on the server**, prepare the data using `IsomorphicRelay.prepareData`,
-then render React markup using `IsomorphicRelay.RootContainer` in place of `Relay.RootContainer`
+then render React markup using `IsomorphicRelay.Renderer` in place of `Relay.Renderer`
 (pass `props` returned by  `IsomorphicRelay.prepareData`), and send the React output along with the
 data to the client:
 ```javascript
@@ -54,13 +53,13 @@ import IsomorphicRelay from 'isomorphic-relay';
 
 app.get('/', (req, res, next) => {
   const rootContainerProps = {
-    Component: MyContainer,
-    route: new MyRoute(),
+    Container: MyContainer,
+    queryConfig: new MyRoute(),
   };
 
-  IsomorphicRelay.prepareData(rootContainerProps).then({data, props} => {
+  IsomorphicRelay.prepareData(rootContainerProps, networkLayer).then({data, props} => {
     const reactOutput = ReactDOMServer.renderToString(
-      <IsomorphicRelay.RootContainer {...props} />
+      <IsomorphicRelay.Renderer {...props} />
     );
 
     res.render('index.ejs', {
@@ -71,20 +70,25 @@ app.get('/', (req, res, next) => {
 });
 ```
 
-On page load **in the browser**, inject the prepared data to the Relay store
-using `IsomorphicRelay.injectPreparedData`, then render React using `IsomorphicRelay.RootContainer`
-in place of `Relay.RootContainer`:
+On page load **in the browser**, create an instance of `Relay.Environment`, inject an Relay network
+layer to it. Then inject the prepared data using `IsomorphicRelay.injectPreparedData`, and render
+React using `IsomorphicRelay.Renderer` in place of `Relay.Renderer` (pass `props` returned by
+`IsomorphicRelay.injectPreparedData`):
 ```javascript
 import IsomorphicRelay from 'isomorphic-relay';
 
-const data = JSON.parse(document.getElementById('preloadedData').textContent);
+const environment = new Relay.Environment();
 
-IsomorphicRelay.injectPreparedData(data);
+environment.injectNetworkLayer(new Relay.DefaultNetworkLayer('/graphql'));
+
+const data = JSON.parse(document.getElementById('preloadedData').textContent);
 
 const rootElement = document.getElementById('root');
 
 // use the same rootContainerProps as on the server
-ReactDOM.render(<IsomorphicRelay.RootContainer {...rootContainerProps} />, rootElement);
+IsomorphicRelay.injectPreparedData(environment, rootContainerProps, data).then(props => {
+  ReactDOM.render(<IsomorphicRelay.Renderer {...props} />, rootElement);
+});
 ```
 
 Example
