@@ -38,12 +38,14 @@ export default Relay.createContainer(StarWarsApp, {
   fragments: {
     factions: () => Relay.QL`
       fragment on Faction @relay(plural: true) {
-        id,
-        name,
+        id
+        __typename
+        name
         ships(first: 10) {
           edges {
             node {
               id,
+              __typename
               ${StarWarsShip.getFragment('ship')}
             }
           }

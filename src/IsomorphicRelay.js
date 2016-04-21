@@ -3,7 +3,7 @@ import IsomorphicRootContainer from './IsomorphicRootContainer';
 import prepareData from './prepareData';
 
 export default {
-    injectPreparedData,
-    prepareData,
-    RootContainer: IsomorphicRootContainer,
+  injectPreparedData,
+  prepareData,
+  RootContainer: IsomorphicRootContainer,
 };

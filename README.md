@@ -37,12 +37,12 @@ Installation
 How to use
 ----------
 
-Don't forget to inject a network layer to Relay on the server.
+Don't forget to inject a network layer to the Relay Environment.
 And if you are using `Relay.DefaultNetworkLayer`, specify the full url to the GraphQL endpoint:
 ```javascript
 const GRAPHQL_URL = `http://localhost:8080/graphql`;
-
-Relay.injectNetworkLayer(new Relay.DefaultNetworkLayer(GRAPHQL_URL));
+const environment = new Relay.Environment();
+environment.injectNetworkLayer(new Relay.DefaultNetworkLayer(GRAPHQL_URL));
 ```
 
 When processing a request **on the server**, prepare the data using `IsomorphicRelay.prepareData`,
@@ -50,6 +50,7 @@ then render React markup using `IsomorphicRelay.RootContainer` in place of `Rela
 (pass `props` returned by  `IsomorphicRelay.prepareData`), and send the React output along with the
 data to the client:
 ```javascript
+import Relay from 'react-relay';
 import IsomorphicRelay from 'isomorphic-relay';
 
 app.get('/', (req, res, next) => {
@@ -58,7 +59,10 @@ app.get('/', (req, res, next) => {
     route: new MyRoute(),
   };
 
-  IsomorphicRelay.prepareData(rootContainerProps).then({data, props} => {
+  const environment = new Relay.Environment();
+  environment.injectNetworkLayer(new Relay.DefaultNetworkLayer(GRAPHQL_URL));
+
+  IsomorphicRelay.prepareData(rootContainerProps, environment).then({data, props} => {
     const reactOutput = ReactDOMServer.renderToString(
       <IsomorphicRelay.RootContainer {...props} />
     );
@@ -71,19 +75,27 @@ app.get('/', (req, res, next) => {
 });
 ```
 
-On page load **in the browser**, inject the prepared data to the Relay store
+On page load **in the browser**, inject the prepared data to the Relay environment
 using `IsomorphicRelay.injectPreparedData`, then render React using `IsomorphicRelay.RootContainer`
 in place of `Relay.RootContainer`:
 ```javascript
+import Relay from 'react-relay';
 import IsomorphicRelay from 'isomorphic-relay';
 
-const data = JSON.parse(document.getElementById('preloadedData').textContent);
+const environment = new Relay.Environment();
+environment.injectNetworkLayer(new Relay.DefaultNetworkLayer(GRAPHQL_URL));
 
-IsomorphicRelay.injectPreparedData(data);
+const data = JSON.parse(document.getElementById('preloadedData').textContent);
+IsomorphicRelay.injectPreparedData(data, environment);
 
 const rootElement = document.getElementById('root');
 
-// use the same rootContainerProps as on the server
+const rootContainerProps = {
+  Component: MyContainer,
+  environment,
+  route: new MyRoute(),
+};
+
 ReactDOM.render(<IsomorphicRelay.RootContainer {...rootContainerProps} />, rootElement);
 ```
 

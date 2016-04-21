@@ -29,18 +29,11 @@
     "build": "babel src --out-dir lib",
     "prepublish": "npm run build"
   },
-  "dependencies": {
-    "babel-runtime": "^6.3.19",
-    "fbjs": "^0.7.0",
-    "react-static-container": "^1.0.0-alpha.1"
-  },
   "peerDependencies": {
-    "react-relay": "0.7.1 - 0.7.3"
+    "react-relay": "^0.8.0"
   },
   "devDependencies": {
     "babel-cli": "^6.3.17",
-    "babel-plugin-transform-es2015-classes": "^6.3.13",
-    "babel-plugin-transform-runtime": "^6.3.13",
     "babel-preset-es2015": "^6.3.13",
     "babel-preset-react": "^6.3.13",
     "babel-preset-stage-0": "^6.3.13"
