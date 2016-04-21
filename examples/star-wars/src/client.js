@@ -12,7 +12,7 @@ const environment = new Relay.Environment();
 
 environment.injectNetworkLayer(new Relay.DefaultNetworkLayer(GRAPHQL_URL));
 
-// IsomorphicRelay.injectPreparedData(data, environment);
+IsomorphicRelay.injectPreparedData(data, environment);
 
 const rootElement = document.getElementById('root');
 
