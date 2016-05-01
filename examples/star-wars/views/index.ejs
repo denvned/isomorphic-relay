@@ -7,7 +7,9 @@
 </head>
 <body>
     <div id="root"><%- reactOutput %></div>
-    <script id="preloadedData" type="application/json"><%- preloadedData %></script>
+    <script id="preloadedData" type="application/json">
+        <%- JSON.stringify(preloadedData).replace(/\//g, '\\/') %>
+    </script>
     <script src="/app.js"></script>
 </body>
 </html>

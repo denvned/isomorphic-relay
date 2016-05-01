@@ -15,7 +15,7 @@ export default (res, next) => {
             <IsomorphicRelay.Renderer {...props} />
         );
         res.render(path.resolve(__dirname, '..', 'views', 'index.ejs'), {
-            preloadedData: JSON.stringify(data),
+            preloadedData: data,
             reactOutput
         });
     }, next);
