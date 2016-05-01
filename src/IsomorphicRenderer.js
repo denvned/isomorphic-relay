@@ -23,7 +23,7 @@ export default class IsomorphicRenderer extends React.Component {
 
   componentDidMount() {
     const { readyState } = this.state;
-    if (!readyState || !readyState.done || this.props.forceFetch) {
+    if (!readyState || !readyState.done) {
       this._runQueries(this.props);
     }
   }

@@ -12,6 +12,8 @@ const data = JSON.parse(document.getElementById('preloadedData').textContent);
 
 const rootElement = document.getElementById('root');
 
-IsomorphicRelay.injectPreparedData(environment, rootContainerProps, data).then(props => {
+IsomorphicRelay.injectPreparedData(environment, data);
+
+IsomorphicRelay.prepareInitialRender({ ...rootContainerProps, environment }).then(props => {
   ReactDOM.render(<IsomorphicRelay.Renderer {...props} />, rootElement);
 });

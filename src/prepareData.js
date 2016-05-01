@@ -23,14 +23,14 @@ export default function prepareData({ Container, queryConfig }, networkLayer) {
     });
 
     const querySet = Relay.getQueries(Container, queryConfig);
-    environment.primeCache(querySet, onReadyStateChange);
+    environment.forceFetch(querySet, onReadyStateChange);
 
     function onReadyStateChange(readyState) {
       if (readyState.error) {
         reject(readyState.error);
       } else if (readyState.aborted) {
         reject(new Error('Aborted'));
-      } else if (readyState.done && !readyState.stale) {
+      } else if (readyState.done) {
         const props = {
           Container,
           environment,

@@ -71,9 +71,10 @@ app.get('/', (req, res, next) => {
 ```
 
 On page load **in the browser**, create an instance of `Relay.Environment`, inject an Relay network
-layer to it. Then inject the prepared data using `IsomorphicRelay.injectPreparedData`, and render
-React using `IsomorphicRelay.Renderer` in place of `Relay.Renderer` (pass `props` returned by
-`IsomorphicRelay.injectPreparedData`):
+layer to it. Then inject the prepared data using `IsomorphicRelay.injectPreparedData`, prepare
+initial render using `IsomorphicRelay.prepareInitialRender`, and render React using
+`IsomorphicRelay.Renderer` in place of `Relay.Renderer` (pass `props` returned by
+`IsomorphicRelay.prepareInitialRender`):
 ```javascript
 import IsomorphicRelay from 'isomorphic-relay';
 
@@ -83,10 +84,12 @@ environment.injectNetworkLayer(new Relay.DefaultNetworkLayer('/graphql'));
 
 const data = JSON.parse(document.getElementById('preloadedData').textContent);
 
+IsomorphicRelay.injectPreparedData(environment, data);
+
 const rootElement = document.getElementById('root');
 
 // use the same rootContainerProps as on the server
-IsomorphicRelay.injectPreparedData(environment, rootContainerProps, data).then(props => {
+IsomorphicRelay.prepareInitialRender({ ...rootContainerProps, environment }).then(props => {
   ReactDOM.render(<IsomorphicRelay.Renderer {...props} />, rootElement);
 });
 ```
