@@ -13,8 +13,21 @@
 import React from 'react';
 import Relay from 'react-relay';
 import StarWarsShip from './StarWarsShip';
+import AddShipMutation from '../mutation/AddShipMutation';
 
 class StarWarsApp extends React.Component {
+  constructor() {
+    super();
+    this.state = {factionId: 1, shipName: ''};
+  }
+
+  handleAddShip() {
+    const name = this.state.shipName;
+    const faction = this.props.factions[this.state.factionId];
+    Relay.Store.commitUpdate(new AddShipMutation({name, faction}));
+    this.setState({shipName: ''});
+  }
+
   render() {
     var {factions} = this.props;
     return (
@@ -29,6 +42,32 @@ class StarWarsApp extends React.Component {
             </ol>
           </li>
         ))}
+          <li>
+            <h1>Introduce Ship</h1>
+            <ol>
+              <li>
+                Name:
+                <input
+                  type="text"
+                  value={this.state.shipName}
+                  onChange={e => this.setState({shipName: e.target.value})}
+                />
+              </li>
+              <li>
+                Faction:
+                <select
+                  value={this.state.factionId}
+                  onChange={e => this.setState({factionId: e.target.value})}
+                >
+                  <option value="0">Galactic Empire</option>
+                  <option value="1">Alliance to Restore the Republic</option>
+                </select>
+              </li>
+              <li>
+                <button onClick={this.handleAddShip.bind(this)}>Add Ship</button>
+              </li>
+            </ol>
+          </li>
       </ol>
     );
   }
@@ -39,6 +78,7 @@ export default Relay.createContainer(StarWarsApp, {
     factions: () => Relay.QL`
       fragment on Faction @relay(plural: true) {
         id,
+        factionId,
         name,
         ships(first: 10) {
           edges {
@@ -48,6 +88,7 @@ export default Relay.createContainer(StarWarsApp, {
             }
           }
         }
+        ${AddShipMutation.getFragment('faction')},
       }
     `,
   },

@@ -70,17 +70,15 @@ app.get('/', (req, res, next) => {
 });
 ```
 
-On page load **in the browser**, create an instance of `Relay.Environment`, inject an Relay network
-layer to it. Then inject the prepared data using `IsomorphicRelay.injectPreparedData`, prepare
+On page load **in the browser**, 
+inject the prepared data using `IsomorphicRelay.injectPreparedData`, prepare
 initial render using `IsomorphicRelay.prepareInitialRender`, and render React using
 `IsomorphicRelay.Renderer` in place of `Relay.Renderer` (pass `props` returned by
 `IsomorphicRelay.prepareInitialRender`):
 ```javascript
 import IsomorphicRelay from 'isomorphic-relay';
 
-const environment = new Relay.Environment();
-
-environment.injectNetworkLayer(new Relay.DefaultNetworkLayer('/graphql'));
+const environment = Relay.Store;
 
 const data = JSON.parse(document.getElementById('preloadedData').textContent);
 
