@@ -1,7 +1,7 @@
 import Relay from 'react-relay';
 import toGraphQL from 'react-relay/lib/toGraphQL';
 
-export default function prepareData({ Container, queryConfig }, networkLayer) {
+export default function prepareData({ Container, queryConfig }, networkLayer, overrides) {
   return new Promise((resolve, reject) => {
     const environment = new Relay.Environment();
 
@@ -18,7 +18,7 @@ export default function prepareData({ Container, queryConfig }, networkLayer) {
           });
         }
 
-        return networkLayer.sendQueries(requests);
+        return networkLayer.sendQueries(requests, overrides);
       },
     });
 
