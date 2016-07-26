@@ -26,11 +26,13 @@
     "url": "git+https://github.com/denvned/isomorphic-relay.git"
   },
   "scripts": {
+    "postinstall": "postinstall-build lib \"npm run build\"",
     "build": "babel src --out-dir lib",
     "prepublish": "npm run build"
   },
   "dependencies": {
-    "babel-runtime": "^6.6.1"
+    "babel-runtime": "^6.6.1",
+    "postinstall-build": "^0.2.1"
   },
   "peerDependencies": {
     "react": "^0.14.8 || ^15.0.1",
