@@ -66,7 +66,7 @@ app.get('/', (req, res, next) => {
       preloadedData: JSON.stringify(data),
       reactOutput
     });
-  }, next);
+  }).catch(next);
 });
 ```
 

@@ -18,5 +18,5 @@ export default (res, next) => {
             preloadedData: data,
             reactOutput
         });
-    }, next);
+    }).catch(next);
 }
