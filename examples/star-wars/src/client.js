@@ -4,9 +4,7 @@ import Relay from 'react-relay';
 import IsomorphicRelay from 'isomorphic-relay';
 import rootContainerProps from './rootContainerProps';
 
-const environment = new Relay.Environment();
-
-environment.injectNetworkLayer(new Relay.DefaultNetworkLayer('/graphql'));
+const environment = Relay.Store;
 
 const data = JSON.parse(document.getElementById('preloadedData').textContent);
 
