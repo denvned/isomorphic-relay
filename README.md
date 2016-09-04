@@ -1,67 +1,63 @@
 Isomorphic React Relay [![npm version][npm-badge]][npm]
 ======================
-Adds server side rendering support to [React Relay](https://facebook.github.io/relay/).
 
-If you are using [react-router-relay](https://github.com/relay-tools/react-router-relay),
-then you might also be interested in
-[isomorphic-relay-router](https://github.com/denvned/isomorphic-relay-router),
-which uses *isomorphic-relay*.
+Enables server-side rendering of [React Relay](https://facebook.github.io/relay/) containers.
 
-What's new
-----------
-
-- Since version 0.5 Isomorphic Relay uses a separate Relay store for each HTTP request. So, now
-Relay store does not grow boundlessly, also one user never see data intended for another user. :v:
-This became possible because of merging [this](https://github.com/facebook/relay/pull/761) and
-[this](https://github.com/facebook/relay/pull/698) PRs into Relay v0.7.
-
-- Since version 0.6, the network layer is also contextual, so it is now possible to pass
-request specific cookies to the GraphQL server. The [corresponding
-PR](https://github.com/facebook/relay/pull/704) is merged into Relay v0.8.
+If you use [react-router-relay](https://github.com/relay-tools/react-router-relay)
+you might also become interested in
+[isomorphic-relay-router](https://github.com/denvned/isomorphic-relay-router).
 
 Acknowledgments
 ---------------
 
-Thanks to [@voideanvalue](https://github.com/voideanvalue) for the
-[information](https://github.com/facebook/relay/issues/36#issuecomment-130402024)
-that helped create the initial version this project. I also thank
-[@josephsavona](https://github.com/josephsavona) for valuable
-[advices](https://github.com/facebook/relay/issues/589) that helped improve it.
+Thank you to everyone who helped in the development of this project with suggestions,
+testing, reported issues, pull-requests. Thank you to the Facebook employees who reviewed
+my [contributions](https://github.com/facebook/relay/commits/master?author=denvned)
+to Relay, which helped to improve the server-side rendering support.
 
 Installation
 ------------
 
-    npm install -S isomorphic-relay
+    npm install --save isomorphic-relay
 
-How to use
+How to Use
 ----------
 
-Create a Relay network layer on the server.
-And if you are using `Relay.DefaultNetworkLayer`, specify the full url to the GraphQL endpoint:
-```javascript
-const GRAPHQL_URL = `http://localhost:8080/graphql`;
-
-const networkLayer = new Relay.DefaultNetworkLayer(GRAPHQL_URL);
-```
-
-When processing a request **on the server**, prepare the data using `IsomorphicRelay.prepareData`,
-then render React markup using `IsomorphicRelay.Renderer` in place of `Relay.Renderer`
-(pass `props` returned by  `IsomorphicRelay.prepareData`), and send the React output along with the
-data to the client:
-```javascript
+Here is an example with detailed comments of how *isomorphic-relay*
+can be used **on the server:**
+```jsx
 import IsomorphicRelay from 'isomorphic-relay';
 
-app.get('/', (req, res, next) => {
-  const rootContainerProps = {
-    Container: MyContainer,
-    queryConfig: new MyRoute(),
-  };
+const rootContainerProps = {
+  Container: MyContainer,
+  queryConfig: new MyRoute(),
+};
 
-  IsomorphicRelay.prepareData(rootContainerProps, networkLayer).then({data, props} => {
+app.get('/', (req, res, next) => {
+  // Create a Relay network layer. Note that on the server you need to specify
+  // the absolute URL of your GraphQL server endpoint.
+  // Here we also pass the user cookies on to the GraphQL server to allow them
+  // to be used there, e.g. for authentication.
+  const networkLayer = new Relay.DefaultNetworkLayer(
+    'http://localhost:8080/graphql',
+    { headers: { cookie: req.headers.cookie } },
+  );
+
+  // Use IsomorphicRelay.prepareData() to prefetch the data required for
+  // rendering of the Relay container.
+  IsomorphicRelay.prepareData(rootContainerProps, networkLayer).then({ data, props } => {
+    // Use <IsomorphicRelay.Renderer> to render your Relay container when the data is ready.
+    // Note that we cannot use the standard <Relay.Renderer> because at the first render
+    // it renders an empty/loading screen even when all the required data is already available.
+    // Unlike that, <IsomorphicRelay.Renderer> in that case renders normally right at
+    // the first render, and it is important for server side rendering
+    // where we do not have a second render.
     const reactOutput = ReactDOMServer.renderToString(
       <IsomorphicRelay.Renderer {...props} />
     );
 
+    // To allow the data to be reused in the browser, serialize and embed it
+    // in the page together with the React markup.
     res.render('index.ejs', {
       preloadedData: JSON.stringify(data),
       reactOutput
@@ -70,33 +66,34 @@ app.get('/', (req, res, next) => {
 });
 ```
 
-On page load **in the browser**, create an instance of `Relay.Environment`, inject an Relay network
-layer to it. Then inject the prepared data using `IsomorphicRelay.injectPreparedData`, prepare
-initial render using `IsomorphicRelay.prepareInitialRender`, and render React using
-`IsomorphicRelay.Renderer` in place of `Relay.Renderer` (pass `props` returned by
-`IsomorphicRelay.prepareInitialRender`):
-```javascript
+And here is an example of the code that can be used **in the browser:**
+```jsx
 import IsomorphicRelay from 'isomorphic-relay';
 
 const environment = new Relay.Environment();
-
 environment.injectNetworkLayer(new Relay.DefaultNetworkLayer('/graphql'));
 
+// Deserialize the data preloaded on the server.
 const data = JSON.parse(document.getElementById('preloadedData').textContent);
 
+// Use IsomorphicRelay.injectPreparedData() to inject the data into the Relay cache,
+// so Relay doesn't need to make GraphQL requests to fetch the data.
 IsomorphicRelay.injectPreparedData(environment, data);
 
-const rootElement = document.getElementById('root');
-
-// use the same rootContainerProps as on the server
+// Use IsomorphicRelay.prepareInitialRender() to wait until all the required data
+// is ready for rendering of the Relay container.
+// Note that it is important to use the same rootContainerProps as on the server to
+// avoid additional GraphQL requests.
 IsomorphicRelay.prepareInitialRender({ ...rootContainerProps, environment }).then(props => {
-  ReactDOM.render(<IsomorphicRelay.Renderer {...props} />, rootElement);
+  // Use <IsomorphicRelay.Renderer> to render your Relay container when the data is ready.
+  // Like on the server we cannot use the standard <Relay.Renderer>, bacause here
+  // we also need to render normally right at the initial render, otherwise we would get
+  // React markup mismatch with the markup prerendered on the server.
+  ReactDOM.render(<IsomorphicRelay.Renderer {...props} />, document.getElementById('root'));
 });
 ```
 
-Example
--------
-See [here](examples/star-wars).
+Also see the [Star Wars](examples/star-wars) example.
 
 [npm-badge]: https://img.shields.io/npm/v/isomorphic-relay.svg
 [npm]: https://www.npmjs.com/package/isomorphic-relay
