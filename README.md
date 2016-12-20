@@ -45,7 +45,7 @@ app.get('/', (req, res, next) => {
 
   // Use IsomorphicRelay.prepareData() to prefetch the data required for
   // rendering of the Relay container.
-  IsomorphicRelay.prepareData(rootContainerProps, networkLayer).then({ data, props } => {
+  IsomorphicRelay.prepareData(rootContainerProps, networkLayer).then(({ data, props }) => {
     // Use <IsomorphicRelay.Renderer> to render your Relay container when the data is ready.
     // Note that we cannot use the standard <Relay.Renderer> because at the first render
     // it renders an empty/loading screen even when all the required data is already available.
