@@ -17,8 +17,8 @@ export default class IsomorphicRenderer extends React.Component {
     this.state = {
       active: !!props.initialReadyState,
       readyState: props.initialReadyState || INACTIVE_READY_STATE,
-      retry: this._retry.bind(this),
     };
+    this._retry = this._retry.bind(this)
   }
 
   componentDidMount() {
@@ -114,7 +114,7 @@ export default class IsomorphicRenderer extends React.Component {
         queryConfig={this.props.queryConfig}
         readyState={readyState}
         render={this.props.render}
-        retry={this.state.retry}
+        retry={this._retry}
       />
     );
   }
