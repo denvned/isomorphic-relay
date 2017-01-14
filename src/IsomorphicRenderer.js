@@ -28,7 +28,11 @@ export default class IsomorphicRenderer extends React.Component {
     }
   }
 
-  _runQueries({ Container, forceFetch, queryConfig, environment }) {
+  _runQueries({ Container, forceFetch, queryConfig, environment, shouldFetch }) {
+    if (!shouldFetch) {
+      return;
+    }
+
     const onReadyStateChange = readyState => {
       if (!this.mounted) {
         this._handleReadyStateChange({...readyState, mounted: false});
@@ -71,6 +75,7 @@ export default class IsomorphicRenderer extends React.Component {
       nextProps.Container !== this.props.Container ||
       nextProps.environment !== this.props.environment ||
       nextProps.queryConfig !== this.props.queryConfig ||
+      nextProps.shouldFetch && !this.props.shouldFetch ||
       nextProps.forceFetch && !this.props.forceFetch
     ) {
       this._runQueries(nextProps);
@@ -129,4 +134,9 @@ IsomorphicRenderer.propTypes = {
   queryConfig: Relay.PropTypes.QueryConfig.isRequired,
   environment: Relay.PropTypes.Environment,
   render: React.PropTypes.func,
+  shouldFetch: React.PropTypes.bool,
+};
+
+IsomorphicRenderer.defaultProps = {
+  shouldFetch: true,
 };
