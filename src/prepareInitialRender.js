@@ -1,4 +1,4 @@
-import Relay from 'react-relay';
+import Relay from 'react-relay/classic';
 
 export default function prepareInitialRender(props) {
   return new Promise(resolve => {

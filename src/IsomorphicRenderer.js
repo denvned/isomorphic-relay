@@ -1,5 +1,5 @@
 import React from 'react';
-import Relay from 'react-relay';
+import Relay from 'react-relay/classic';
 
 const INACTIVE_READY_STATE = {
   aborted: false,

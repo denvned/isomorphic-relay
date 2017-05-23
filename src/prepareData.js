@@ -1,4 +1,4 @@
-import Relay from 'react-relay';
+import Relay from 'react-relay/classic';
 import toGraphQL from 'react-relay/lib/toGraphQL';
 
 export default function prepareData(
