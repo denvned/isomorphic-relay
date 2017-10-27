@@ -1,5 +1,6 @@
 import React from 'react';
-import Relay from 'react-relay';
+import PropTypes from 'prop-types'
+import Relay from 'react-relay/compat';
 
 const INACTIVE_READY_STATE = {
   aborted: false,
@@ -121,20 +122,20 @@ export default class IsomorphicRenderer extends React.Component {
 }
 
 IsomorphicRenderer.propTypes = {
-  Container: Relay.PropTypes.Container,
-  forceFetch: React.PropTypes.bool,
-  initialReadyState: React.PropTypes.shape({
-    aborted: React.PropTypes.bool.isRequired,
-    done: React.PropTypes.bool.isRequired,
-    error: React.PropTypes.any,
-    ready: React.PropTypes.bool.isRequired,
-    stale: React.PropTypes.bool.isRequired,
+  Container: PropTypes.any, // Container
+  forceFetch: PropTypes.bool,
+  initialReadyState: PropTypes.shape({
+    aborted: PropTypes.bool.isRequired,
+    done: PropTypes.bool.isRequired,
+    error: PropTypes.any,
+    ready: PropTypes.bool.isRequired,
+    stale: PropTypes.bool.isRequired,
   }),
-  onReadyStateChange: React.PropTypes.func,
-  queryConfig: Relay.PropTypes.QueryConfig.isRequired,
-  environment: Relay.PropTypes.Environment,
-  render: React.PropTypes.func,
-  shouldFetch: React.PropTypes.bool,
+  onReadyStateChange: PropTypes.func,
+  queryConfig: PropTypes.isRequired, //QueryConfig
+  environment: PropTypes.any, // Environment
+  render: PropTypes.func,
+  shouldFetch: PropTypes.bool,
 };
 
 IsomorphicRenderer.defaultProps = {
