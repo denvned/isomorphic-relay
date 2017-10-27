@@ -1,6 +1,6 @@
 {
   "name": "isomorphic-relay",
-  "version": "0.7.4",
+  "version": "0.8.0",
   "description": "Adds server side rendering support to React Relay",
   "author": "Denis Nedelyaev",
   "homepage": "https://github.com/denvned/isomorphic-relay",
